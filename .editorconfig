@@ -1,0 +1,16 @@
+[*.lua]
+indent_style = space
+indent_size = 2
+
+[*.nix]
+indent_style = space
+indent_size = 2
+
+[matlab]
+indent_style = space
+indent_size = 4
+
+[*.m]
+indent_style = space
+indent_size = 4
+
