@@ -22,6 +22,7 @@ local live_multigrep = function(opts)
         table.insert(args, pieces[1])
       end
 
+
       if pieces[2] then
         table.insert(args, "-g")
         table.insert(args, pieces[2])

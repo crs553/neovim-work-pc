@@ -1,10 +1,9 @@
--- Install plugins: mason.nvim, nvim-lspconfig
 return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
       'saghen/blink.cmp',
-      {
+      {             -- for lua lsp
         "folke/lazydev.nvim",
         ft = "lua", -- only load on lua files
         opts = {
@@ -25,25 +24,28 @@ return {
 
       --python
       require 'lspconfig'.pylsp.setup { capabilites = capabilities }
+
+      --markdown
+      require 'lspconfig'.marksman.setup { capabilites = capabilities }
+
       --matlab
-      require("lspconfig").matlab_ls.setup {
-        capabilities = capabilities,
-        cmd = { "matlab-language-server", "--stdio" },
-        filetypes = { "matlab" },
-        single_file_support = true,
+      require 'lspconfig'.matlab_ls.setup {
+        cmd = { 'matlab-language-server', '--stdio', '--matlabInstallPath="C:\\Program Files\\MATLAB\\R2024b"' },
+        filetypes = { 'matlab' },
+        root_dir = function(fname)
+          return vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
+        end,
+        capabilites = capabilities,
         settings = {
           MATLAB = {
             indexWorkspace = true,
-            installPath = "C://Program Files/MATLAB/R2024a", -- might need to change this based on current matlab version
-            matlabConnectionTiming = "onStart",
+            matlabConnectionTiming = 'onStart',
+            matlabInstallPath = "C:\\Program Files\\MATLAB\\R2024b",
             telemetry = true,
           },
-
         },
+        single_file_support = false,
       }
-
-      --markdown
-      require 'lspconfig'.marksman.setup { capabilities = capabilities }
 
       --autoformat on save
       vim.api.nvim_create_autocmd('LspAttach', {
