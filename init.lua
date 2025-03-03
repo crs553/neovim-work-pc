@@ -41,28 +41,3 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
-
--- In terminal compiling (unused as you can't do this with matlab)
--- local job_id = 0
-
-vim.api.nvim_create_autocmd('TermOpen', {
-  desc = 'Customise terminal opening',
-  group = vim.api.nvim_create_augroup('custom-term-open', { clear = true }),
-  callback = function()
-    vim.opt.number = false
-    vim.opt.relativenumber = false
-
-    -- In terminal compiling (unused as you can't do this with matlab)
-    -- job_id = vim.bo.channel
-  end,
-})
-
--- open terminal
-vim.keymap.set("n", "<M-i>", function()
-  vim.cmd.vnew()
-  vim.cmd.term()
-  vim.cmd.wincmd("J")
-  vim.api.nvim_win_set_height(0, 15)
-end)
-
-vim.keymap.set('t', '<M-i>', '<C-\\><C-n>:bd!<CR>,', { noremap = true, silent = true })
