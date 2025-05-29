@@ -1,9 +1,36 @@
+-- Innstall plugins: mason.nvim, nvim-lspconfig
 return {
   {
+    'williamboman/mason.nvim',
+    tag = "v2.0.0-rc.2",
+    config = function()
+      require("mason").setup({
+        ui = {
+          icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗"
+          }
+        }
+      })
+    end,
+  },
+  {
+    'williamboman/mason-lspconfig.nvim',
+    tag = "v2.0.0-rc.1",
+    dependencies = { "williamboman/mason.nvim" },
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = { "pylsp", "marksman", "bashls", "lua_ls", "nixd", "black", "mypy", "rust_analyzer", "matlab_ls" },
+        automatic_installation = true,
+      })
+    end,
+  },
+  {
     "neovim/nvim-lspconfig",
+    tag = "v2.1.0",
     dependencies = {
-      'saghen/blink.cmp',
-      {             -- for lua lsp
+      {
         "folke/lazydev.nvim",
         ft = "lua", -- only load on lua files
         opts = {
@@ -18,18 +45,50 @@ return {
     config = function()
       -- autocompletion
       local capabilities = require('blink.cmp').get_lsp_capabilities()
+      local lspconfig = require("lspconfig")
 
       -- lua
-      require("lspconfig").lua_ls.setup { capabilites = capabilities }
+      lspconfig.lua_ls.setup({ capabilites = capabilities })
 
-      --python
-      require 'lspconfig'.pylsp.setup { capabilites = capabilities }
+      -- python
+      lspconfig.pylsp.setup({
+        capabilites = capabilities,
+        plugins = {
+          black = { enabled = true },
+          pyflakes = { enabled = false },
+          pycodestyle = { enabled = false },
+        }
+      })
 
-      --markdown
-      require 'lspconfig'.marksman.setup { capabilites = capabilities }
+      -- nixd
+      lspconfig.nixd.setup({ capabilites = capabilities })
+
+      -- markdown
+      lspconfig.marksman.setup({ capabilities = capabilities })
+
+      -- bash
+      lspconfig.bashls.setup({ capabilities = capabilities })
+
+      -- go lsp
+      lspconfig.gopls.setup({ capabilities = capabilities })
+
+      -- rust
+      lspconfig.rust_analyzer.setup({
+        capabilities = capabilities,
+        settings = {
+          ['rust-analyzer'] = {
+            cargo = { allFeatures = true },
+            checkOnSave = {
+              enable = true,
+              command = "clippy",
+            }
+          },
+        },
+
+      })
 
       --matlab
-      require 'lspconfig'.matlab_ls.setup {
+      lspconfig.matlab_ls.setup({
         cmd = { 'matlab-language-server', '--stdio', '--matlabInstallPath="C:\\Program Files\\MATLAB\\R2024b"' },
         filetypes = { 'matlab' },
         root_dir = function(fname)
@@ -45,7 +104,7 @@ return {
           },
         },
         single_file_support = false,
-      }
+      })
 
       --autoformat on save
       vim.api.nvim_create_autocmd('LspAttach', {

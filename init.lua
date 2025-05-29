@@ -33,6 +33,15 @@ vim.keymap.set("n", "<space><space>x", "<cmd>source %<CR>")
 vim.keymap.set("n", "<space>x", ":.lua<CR>")
 vim.keymap.set("v", "<space>x", ":lua<CR>")
 
+-- diagnostic tools for lsp
+vim.diagnostic.config({
+  virtual_text = true, -- Enable virtual text
+  signs = true,        -- Show signs in the gutter
+  update_in_insert = false,
+  underline = true,
+  severity_sort = true,
+})
+
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',

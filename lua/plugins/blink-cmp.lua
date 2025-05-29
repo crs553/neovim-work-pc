@@ -1,6 +1,7 @@
 return {
   {
     'saghen/blink.cmp',
+    tag = "v1.2.0",
     -- optional: provides snippets for the snippet source
     dependencies = 'rafamadriz/friendly-snippets',
 

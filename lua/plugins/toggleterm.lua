@@ -5,7 +5,7 @@ return {
     opts = {
       --[[ things you want to change go here]]
       open_mapping = [[<M-i>]],
-      direction = 'horizontal'
+      direction = 'vertical'
     },
     config = function()
       require("toggleterm").setup()
