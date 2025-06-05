@@ -21,7 +21,7 @@ return {
     dependencies = { "williamboman/mason.nvim" },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "pylsp", "marksman", "bashls", "lua_ls", "nixd", "black", "mypy", "rust_analyzer", "matlab_ls" },
+        ensure_installed = { "pylsp", "marksman", "bashls", "lua_ls", "rust_analyzer", "matlab_ls", "harper_ls" },
         automatic_installation = true,
       })
     end,
@@ -89,7 +89,15 @@ return {
 
       --matlab
       lspconfig.matlab_ls.setup({
-        cmd = { 'matlab-language-server', '--stdio', '--matlabInstallPath="C:\\Program Files\\MATLAB\\R2024b"' },
+        --cmd = { 'C:\\Users\\charlie\\AppData\\Local\\nvim-data\\mason\\packages\\matlab-language-server\\matlab-language-server.cmd' },
+        cmd = {
+          vim.fn.expand(
+            "C:\\Users\\charlie\\AppData\\Local\\nvim-data\\mason\\packages\\matlab-language-server\\matlab-language-server.cmd"
+          ),
+          "--stdio",
+          "--matlabInstallPath='C:/Program Files/MATLAB/R2024b'",
+        },
+        --cmd = { 'matlab-language-server', '--stdio', '--matlabInstallPath="C:\\Program Files\\MATLAB\\R2024b"' },
         filetypes = { 'matlab' },
         root_dir = function(fname)
           return vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
@@ -99,7 +107,6 @@ return {
           MATLAB = {
             indexWorkspace = true,
             matlabConnectionTiming = 'onStart',
-            matlabInstallPath = "C:\\Program Files\\MATLAB\\R2024b",
             telemetry = true,
           },
         },
@@ -125,5 +132,34 @@ return {
         end
       })
     end,
-  }
+  },
+  {
+    "mfussenegger/nvim-lint",
+    event = {
+      "BufReadPre",
+      "BufNewFile",
+    },
+    config = function()
+      local lint = require("lint")
+      lint.linters_by_ft = {
+        python = { "pylint" },
+      }
+      local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
+
+      vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+        group = lint_augroup,
+        callback = function()
+          lint.try_lint()
+        end,
+      })
+    end,
+  },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        python = { "black" },
+      },
+    },
+  },
 }
