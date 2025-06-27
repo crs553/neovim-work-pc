@@ -64,7 +64,9 @@ return {
       lspconfig.nixd.setup({ capabilites = capabilities })
 
       -- markdown
-      lspconfig.marksman.setup({ capabilities = capabilities })
+      lspconfig.marksman.setup({
+        capabilities = capabilities,
+      })
 
       -- bash
       lspconfig.bashls.setup({ capabilities = capabilities })
@@ -140,26 +142,30 @@ return {
       "BufNewFile",
     },
     config = function()
-      local lint = require("lint")
-      lint.linters_by_ft = {
-        python = { "pylint" },
-      }
-      local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
-
-      vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
-        group = lint_augroup,
-        callback = function()
-          lint.try_lint()
-        end,
+      require('lint').linters_by_ft = { python = { 'pylint' } }
+      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
+        callback = function() require('lint').try_lint() end
       })
     end,
   },
   {
-    "stevearc/conform.nvim",
+    'rshkarin/mason-nvim-lint',
+    dependencies = { 'williamboman/mason.nvim', 'mfussenegger/nvim-lint' },
+    config = function()
+      require('mason-nvim-lint').setup({ automatic_installation = true })
+    end
+  },
+  {
+    'stevearc/conform.nvim',
     opts = {
-      formatters_by_ft = {
-        python = { "black" },
-      },
-    },
+      formatters_by_ft = { python = { 'black' } },
+    }
+  },
+  {
+    'zapling/mason-conform.nvim',
+    dependencies = { 'williamboman/mason.nvim', 'stevearc/conform.nvim' },
+    config = function()
+      require('mason-conform').setup({ ignore_install = {} })
+    end
   },
 }
