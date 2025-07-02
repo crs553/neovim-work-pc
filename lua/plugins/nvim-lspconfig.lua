@@ -63,9 +63,24 @@ return {
       -- nixd
       lspconfig.nixd.setup({ capabilites = capabilities })
 
-      -- markdown
+      -- markdown / marksman setup
       lspconfig.marksman.setup({
         capabilities = capabilities,
+        filetypes = { "markdown" }, -- default, but ensures .markdown is included
+        root_dir = function(fname)
+          local notes_path = vim.fn.expand("T:/Leeds Test Objects/Assorted - Charlie Stubbs/notes")
+          local real_path = vim.fn.fnamemodify(fname, ":p")
+
+          -- If inside notes directory
+          if real_path:find(notes_path, 1, true) == 1 then
+            return notes_path
+          end
+
+          -- Look for .markdown.toml or .git upwards
+          local util = require("lspconfig.util")
+          return util.root_pattern(".markdown.toml", ".git")(fname)
+          or vim.fn.fnamemodify(fname, ":p:h") -- fallback: file's own directory (single-file mode)
+        end,
       })
 
       -- bash
@@ -141,12 +156,13 @@ return {
       "BufReadPre",
       "BufNewFile",
     },
-    config = function()
-      require('lint').linters_by_ft = { python = { 'pylint' } }
+    require('lint').linters_by_ft = {
+      python = { 'pylint' },
+      markdown = { 'markdownlint' },
       vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
         callback = function() require('lint').try_lint() end
-      })
-    end,
+      }),
+    },
   },
   {
     'rshkarin/mason-nvim-lint',

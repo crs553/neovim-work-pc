@@ -2,7 +2,14 @@ return {
   {
     "atiladefreitas/dooing",
     opts = function()
-      local save_path = vim.fs.normalize("$USERPROFILE/Documents/notes/dooing_todos.json")
+      -- Attempt to load a local config with secrets (like your notes path)
+      local ok, local_config = pcall(require, "local_config")
+
+      -- Default fallback if local_config doesn't exist
+      local notes_path = ok and local_config.notes_path or vim.fn.expand("~/notes")
+
+      -- Construct save path
+      local save_path = notes_path .. "/dooing_todos.json"
 
       -- Ensure the directory exists
       local save_dir = vim.fs.dirname(save_path)
@@ -38,3 +45,4 @@ return {
     },
   },
 }
+
