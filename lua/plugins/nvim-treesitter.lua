@@ -15,7 +15,9 @@ return {
         "markdown_inline",
         "python",
         "matlab",
-        "cpp"
+        "cpp",
+        "latex",
+        "html",
       },
 
       sync_install = false,
