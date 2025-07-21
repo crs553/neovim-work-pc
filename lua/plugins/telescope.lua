@@ -36,7 +36,7 @@ return {
       local ok, local_config = pcall(require, "local_config")
       -- Default fallback if local_config doesn't exist
       local notes_path = ok and local_config.notes_path or vim.fn.expand("~/notes")
-      vim.keymap.set("n", "<space>on", function()
+      vim.keymap.set("n", "<space>nn", function()
         require('telescope.builtin').find_files {
           cwd = notes_path
         }

@@ -2,7 +2,6 @@
 return {
   {
     'williamboman/mason.nvim',
-    tag = "v2.0.0-rc.2",
     config = function()
       require("mason").setup({
         ui = {
@@ -17,7 +16,6 @@ return {
   },
   {
     'williamboman/mason-lspconfig.nvim',
-    tag = "v2.0.0-rc.1",
     dependencies = { "williamboman/mason.nvim" },
     config = function()
       require("mason-lspconfig").setup({
@@ -28,7 +26,6 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    tag = "v2.1.0",
     dependencies = {
       {
         "folke/lazydev.nvim",
@@ -107,7 +104,7 @@ return {
             "C:\\Users\\charlie\\AppData\\Local\\nvim-data\\mason\\packages\\matlab-language-server\\matlab-language-server.cmd"
           ),
           "--stdio",
-          "--matlabInstallPath='C:/Program Files/MATLAB/R2024b'",
+          "--matlabInstallPath='C:/Program Files/MATLAB/R2025a'",
         },
         filetypes = { 'matlab' },
         root_dir = function(fname)
@@ -128,15 +125,22 @@ return {
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if not client then return end
-          if client.supports_method('textDocument/formatting') then
+
+          if client.server_capabilities.documentFormattingProvider then
             vim.api.nvim_create_autocmd('BufWritePre', {
               buffer = args.buf,
               callback = function()
-                vim.lsp.buf.format({ bufnr = args.buf, id = client.id })
+                vim.lsp.buf.format({
+                  bufnr = args.buf,
+                  -- Optional: use client ID to format with a specific client
+                  filter = function(c)
+                    return c.id == client.id
+                  end,
+                })
               end,
             })
           end
-        end
+        end,
       })
     end,
   },
@@ -176,4 +180,3 @@ return {
     end
   },
 }
-

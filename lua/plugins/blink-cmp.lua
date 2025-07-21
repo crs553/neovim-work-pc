@@ -1,14 +1,15 @@
 return {
   {
     'saghen/blink.cmp',
-    tag = "v1.2.0",
     -- optional: provides snippets for the snippet source
-    dependencies = 'rafamadriz/friendly-snippets',
+    dependencies = { 'rafamadriz/friendly-snippets' },
 
+    version = '1.*',
     -- use a release tag to download pre-built binaries
-    version = 'v0.*',
     build = 'cargo +nightly build --release',
 
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
     opts = {
       -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept, C-n/C-p for up/down)
       -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys for up/down)
@@ -35,6 +36,8 @@ return {
 
       signature = { enabled = true },
 
+      -- (Default) Only show the documentation popup when manually triggered
+      completion = { documentation = { auto_show = true } },
       -- Blink.cmp uses a Rust fuzzy matcher by default for typo resistance and significantly better performance
       -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
       -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
@@ -44,7 +47,7 @@ return {
         prebuilt_binaries = {
           download = false
         },
-        implementation = "rust"
+        implementation = "prefer_rust_with_warning"
       }
     },
     opts_extend = { "sources.default" }

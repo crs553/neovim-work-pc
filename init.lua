@@ -50,3 +50,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+vim.g.pynvim_disable_update_check = 1
+vim.g.python3_host_prog = 'C:/Users/charlie/AppData/Local/Programs/Python/Python313/python.EXE'

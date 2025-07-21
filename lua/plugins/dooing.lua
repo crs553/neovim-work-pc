@@ -13,7 +13,7 @@ return {
 
       -- Ensure the directory exists
       local save_dir = vim.fs.dirname(save_path)
-      if not vim.loop.fs_stat(save_dir) then
+      if save_dir and not vim.loop.fs_stat(save_dir) then
         vim.fn.mkdir(save_dir, "p")
       end
 
@@ -45,4 +45,3 @@ return {
     },
   },
 }
-
